@@ -82,6 +82,9 @@ Thumbs.db
 *.swo
 *~
 
+# Claude Code
+.claude/
+
 # IDE
 .vscode/
 .idea/
