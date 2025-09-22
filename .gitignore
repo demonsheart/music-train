@@ -6,24 +6,31 @@
 .pub-cache/
 .pub/
 build/
-doc/
 
-# Android
-/android/app/debug/
-/android/app/profile/
-/android/app/release/
+# Android - Build outputs and generated files
+/android/app/build/
 /android/build/
 /android/.gradle/
-/android/captures/
-/android/external-libs-build/
-/android/local.properties
 /android/.idea/
 /android/.settings
 /android/.vscode/
+/android/captures/
+/android/local.properties
 /android/keystores/
 *.jks
 *.keystore
 *.keyStore
+
+# Android - Resources (can be regenerated)
+/android/app/src/main/res/mipmap*/
+/android/app/src/main/res/drawable*/**/*.png
+/android/app/src/main/res/values*/colors.xml
+/android/app/src/main/res/values*/strings.xml
+
+# Android - Gradle wrapper binaries
+/android/gradle/wrapper/gradle-wrapper.jar
+/android/gradlew
+/android/gradlew.bat
 
 # iOS
 /ios/Flutter/
@@ -38,11 +45,9 @@ doc/
 /ios/Runner.xcworkspace/xcuserdata/
 
 # Web
-/build/
 /web/.dart_tool/
 /web/.flutter-plugins-dependencies
 /web/packages/
-/web/pubspec.lock
 
 # macOS
 /Flutter/Generated.xcconfig
@@ -50,25 +55,6 @@ doc/
 /Flutter/Flutter.podspec
 /Flutter/ephemeral/
 /Flutter/Flutter.framework.dSYM
-/Flutter/Generated.xcconfig
-/Flutter/Flutter.framework.dSYM
-/Flutter/ephemeral/
-
-# Linux
-/build/
-.flutter-plugins
-.flutter-plugins-dependencies
-.packages
-.pub-cache/
-.pub/
-
-# Windows
-/build/
-.flutter-plugins
-.flutter-plugins-dependencies
-.packages
-.pub-cache/
-.pub/
 
 # General
 .DS_Store
@@ -99,7 +85,6 @@ Thumbs.db
 .packages
 .pub/
 build/
-flutter_app.iml
 
 # Logs
 *.log
@@ -140,53 +125,3 @@ flutter_app.iml
 # Backup files
 *.bak
 *.backup
-
-# System files
-*.sys
-*.dll
-*.exe
-*.so
-*.dylib
-
-# Documentation (if you want to keep it)
-/docs/
-/documentation/
-
-# Node.js (if using any Node.js tools)
-node_modules/
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-
-# Python (if using any Python tools)
-__pycache__/
-*.py[cod]
-*$py.class
-*.so
-.Python
-env/
-venv/
-ENV/
-env.bak/
-venv.bak/
-
-# Audio files (if any)
-*.mp3
-*.wav
-*.ogg
-*.m4a
-
-# Video files (if any)
-*.mp4
-*.mov
-*.avi
-*.mkv
-
-# Images (if any large assets)
-*.jpg
-*.jpeg
-*.png
-*.gif
-*.bmp
-*.tiff
-*.webp
