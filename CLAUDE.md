@@ -4,52 +4,151 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-This is a Flutter-based music training application designed to help musicians improve their fundamental skills. The project aims to provide free alternative to paid music learning tools with the following core features:
+Music Train is a Flutter-based music training application that provides free alternative to paid music learning tools. The app helps musicians improve fundamental skills through interactive training exercises.
 
-### Core Features (Planned)
-- Scale degree and note name reaction training (12 keys)
-- Chord training
-- Rhythm training
-- Scale training
-- Improvisation training
-- Chord-scale pairing
-- Chord progression training
-- Circle of fifths training
+## Common Development Commands
 
-## Current Focus (Version 1)
+### Essential Commands
 
-The initial version focuses on implementing the scale degree and note name reaction training feature with two modes:
+```bash
+# Install dependencies
+flutter pub get
 
-1. **Forward Practice**: In circle of fifths descending order, prompt user with current major/minor key, generate scale degrees, and have user match note names
-2. **Reverse Practice**: In circle of fifths descending order, prompt user with current major/minor key, generate note names, and have user match scale degrees
-3. **Key Mode Switching**: Allow users to switch between major and minor keys
+# Run app (web version)
+flutter run -d chrome
 
-Requirements include beautiful UI design, reward mechanisms, and timing strategies to enhance training efficiency.
+# Hot reload during development
+# Press 'r' in running terminal
 
-## Technology Stack
+# Hot restart
+# Press 'R' in running terminal
 
-- **Framework**: Flutter (for rapid development and cross-platform compatibility)
-- **Language**: Dart
+# Run tests
+flutter test
 
-## Development Setup
+# Code analysis
+flutter analyze
 
-Since this is a new Flutter project, you'll need to:
+# Build for release (web)
+flutter build web --release
+```
 
-1. Initialize Flutter project: `flutter create .` or `flutter create music_train`
-2. Set up project structure in `lib/` directory
-3. Configure dependencies in `pubspec.yaml`
+### Development Setup
 
-## Project Architecture Notes
+- **Flutter SDK**: >=3.0.0
+- **Dart SDK**: >=3.0.0
+- **Target Platform**: Web (iOS/Android ready)
 
-- The app should follow Flutter best practices with clean architecture
-- Focus on music theory logic implementation for the first feature
-- Design with future feature expansion in mind
-- Implement gamification elements for better user engagement
+## Project Architecture
 
-## Music Theory Concepts
+### Directory Structure
 
-Key concepts to implement:
-- Circle of fifths (五度圈)
-- Scale degrees (级数) and note names (音名) mapping
-- Major/minor key relationships
-- Music notation fundamentals
+```
+lib/
+├── screens/              # Main app screens
+│   ├── splash_screen.dart
+│   ├── home_screen_simple.dart
+│   └── training_screen_basic.dart
+├── services/             # Business logic
+│   └── music_theory_logic.dart
+├── widgets/              # Reusable UI components
+│   ├── answer_button.dart
+│   └── feedback_overlay.dart
+└── main.dart             # App entry point
+```
+
+### Architecture Pattern
+
+- **Clean Architecture**: Clear separation of concerns
+- **State Management**: Provider pattern for state sharing
+- **Presentation Layer**: Screens and widgets
+- **Business Logic**: Music theory calculations in services
+- **Data Layer**: Minimal, using shared_preferences for persistence
+
+### Key Components
+
+#### Training Screen (`lib/screens/training_screen_basic.dart`)
+
+- Main training interface with 3-phase user journey
+- Manages timer, scoring, and training state
+- Handles key selection, duration selection, and active training
+
+#### Music Theory Logic (`lib/services/music_theory_logic.dart`)
+
+- Pure business logic with no UI dependencies
+- Implements accurate scale calculations:
+  - Major scale: W-W-H-W-W-W-H `[0, 2, 4, 5, 7, 9, 11]`
+  - Minor scale: W-H-W-W-H-W-W `[0, 2, 3, 5, 7, 8, 10]`
+- Answer validation and note/degree mapping
+
+#### Answer Button (`lib/widgets/answer_button.dart`)
+
+- Sophisticated button component with multiple states
+- Smart feedback system with visual indicators
+- Animation controllers for press feedback
+
+## Core Features (v1.3)
+
+### Current Implementation
+
+- **Twelve-Key Training**: All chromatic keys with major/minor modes
+- **Dual Practice Modes**:
+  - Forward: Scale degrees → Note names
+  - Reverse: Note names → Scale degrees
+- **Smart Feedback System**: Button-level feedback without popup disruption
+- **Fixed Key Practice**: Users can focus on single key
+- **Real-time Metrics**: Score, streak, accuracy tracking
+
+### Music Theory Implementation
+
+- Supports all 12 chromatic keys (C, C#, D, D#, E, F, F#, G, G#, A, A#, B)
+- Accurate major/minor scale calculations
+- Real-time answer validation
+- Circle of fifths foundation for future features
+
+## Development Patterns
+
+### State Management
+
+- Use **StatefulWidgets** for complex UI state
+- **Provider** pattern for cross-widget state sharing
+- Local state managed within individual widgets
+- Proper timer cleanup in dispose()
+
+### UI/UX Conventions
+
+- **Material Design 3**: Modern UI components
+- **Card-based Layout**: Clear information hierarchy
+- **Gradient Backgrounds**: Blue/purple theme
+- **Bilingual Interface**: Chinese with English terms
+- **Responsive Design**: Grid-based layouts
+- **Animation**: Smooth transitions and micro-interactions
+
+### Code Quality
+
+- **Null Safety**: Modern Dart null safety
+- **Linting**: Flutter recommended lints
+- **Testing**: Flutter test framework
+- **Performance**: Efficient rebuilds and memory management
+
+## Important Implementation Details
+
+### Answer Feedback System
+
+- **Button-level feedback**: Results shown directly on answer buttons
+- **Visual indicators**: ✓ Green for correct, ✗ Red for incorrect, 💡 Amber for correct answer when user was wrong
+- **Non-intrusive**: No full-screen popups, maintains training flow
+- **Auto-progression**: 1.5-second delay before next question
+
+### User Journey Phases
+
+1. **Duration Selection**: 5, 10, 20, or 30-minute sessions
+2. **Key Selection**: Choose from 12 chromatic keys
+3. **Active Training**: Real-time questions with immediate feedback
+
+### Animation Patterns
+
+- **AnimationController**: Manual control for complex animations
+- **Tween Animations**: Smooth interpolation between values
+- **CurvedAnimation**: Natural easing curves
+- **Auto-cleanup**: Proper disposal in lifecycle methods
