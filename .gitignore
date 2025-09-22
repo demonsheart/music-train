@@ -125,3 +125,20 @@ build/
 # Backup files
 *.bak
 *.backup
+
+# Built application files
+*.apk
+*.aab
+*.ipa
+*.app
+
+# Build artifacts
+*.so
+*.dylib
+*.dll
+
+# CMake build logs
+*.log
+CMakeFiles/
+CMakeCache.txt
+*.cmake
