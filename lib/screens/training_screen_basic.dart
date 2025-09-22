@@ -197,6 +197,9 @@ class _TrainingScreenBasicState extends State<TrainingScreenBasic> {
 
   @override
   Widget build(BuildContext context) {
+    final screenHeight = MediaQuery.of(context).size.height;
+    final isSmallScreen = screenHeight < 700;
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('音乐训练'),
@@ -350,10 +353,10 @@ class _TrainingScreenBasicState extends State<TrainingScreenBasic> {
                     ),
                   ],
                   if (!_showKeySelector && !_showDurationSelector) ...[
-                    const SizedBox(height: 20),
+                    SizedBox(height: isSmallScreen ? 5 : 10),
                     Container(
                       margin: const EdgeInsets.symmetric(horizontal: 20),
-                      padding: const EdgeInsets.all(30),
+                      padding: EdgeInsets.all(isSmallScreen ? 10 : 15),
                       decoration: BoxDecoration(
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(15),
@@ -370,40 +373,40 @@ class _TrainingScreenBasicState extends State<TrainingScreenBasic> {
                           if (_isForwardMode) ...[
                             const Text(
                               '级数',
-                              style: TextStyle(fontSize: 18, color: Colors.grey),
+                              style: TextStyle(fontSize: 16, color: Colors.grey),
                             ),
-                            const SizedBox(height: 10),
+                            SizedBox(height: isSmallScreen ? 3 : 5),
                             Text(
                               '$_currentDegree',
-                              style: const TextStyle(
-                                fontSize: 48,
+                              style: TextStyle(
+                                fontSize: isSmallScreen ? 28 : 36,
                                 fontWeight: FontWeight.bold,
                                 color: Colors.orange,
                               ),
                             ),
-                            const SizedBox(height: 10),
+                            SizedBox(height: isSmallScreen ? 3 : 5),
                             const Text(
                               '对应的音名是？',
-                              style: TextStyle(fontSize: 20, color: Colors.grey),
+                              style: TextStyle(fontSize: 16, color: Colors.grey),
                             ),
                           ] else ...[
                             const Text(
                               '音名',
-                              style: TextStyle(fontSize: 18, color: Colors.grey),
+                              style: TextStyle(fontSize: 16, color: Colors.grey),
                             ),
-                            const SizedBox(height: 10),
+                            SizedBox(height: isSmallScreen ? 3 : 5),
                             Text(
                               _currentNote,
-                              style: const TextStyle(
-                                fontSize: 48,
+                              style: TextStyle(
+                                fontSize: isSmallScreen ? 28 : 36,
                                 fontWeight: FontWeight.bold,
                                 color: Colors.purple,
                               ),
                             ),
-                            const SizedBox(height: 10),
+                            SizedBox(height: isSmallScreen ? 3 : 5),
                             const Text(
                               '对应的级数是？',
-                              style: TextStyle(fontSize: 20, color: Colors.grey),
+                              style: TextStyle(fontSize: 16, color: Colors.grey),
                             ),
                           ],
                         ],
@@ -411,7 +414,7 @@ class _TrainingScreenBasicState extends State<TrainingScreenBasic> {
                     ),
                   ],
                   if (!_showKeySelector && !_showDurationSelector) ...[
-                    const SizedBox(height: 30),
+                    const SizedBox(height: 15),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
@@ -433,11 +436,11 @@ class _TrainingScreenBasicState extends State<TrainingScreenBasic> {
                         ),
                       ],
                     ),
-                    const SizedBox(height: 20),
+                    const SizedBox(height: 10),
                     if (_totalAnswered > 0) ...[
                       Container(
                         margin: const EdgeInsets.symmetric(horizontal: 20),
-                        padding: const EdgeInsets.all(15),
+                        padding: const EdgeInsets.all(10),
                         decoration: BoxDecoration(
                           color: Colors.white,
                           borderRadius: BorderRadius.circular(10),
@@ -456,11 +459,11 @@ class _TrainingScreenBasicState extends State<TrainingScreenBasic> {
                               children: [
                                 Column(
                                   children: [
-                                    const Text('答题速度', style: TextStyle(fontSize: 12, color: Colors.grey)),
+                                    const Text('答题速度', style: TextStyle(fontSize: 10, color: Colors.grey)),
                                     Text(
                                       '${_averageResponseTime.toStringAsFixed(1)}s',
                                       style: const TextStyle(
-                                        fontSize: 16,
+                                        fontSize: 14,
                                         fontWeight: FontWeight.bold,
                                         color: Colors.blue,
                                       ),
@@ -469,11 +472,11 @@ class _TrainingScreenBasicState extends State<TrainingScreenBasic> {
                                 ),
                                 Column(
                                   children: [
-                                    const Text('正确率', style: TextStyle(fontSize: 12, color: Colors.grey)),
+                                    const Text('正确率', style: TextStyle(fontSize: 10, color: Colors.grey)),
                                     Text(
                                       '${_totalAnswered > 0 ? (_correctAnswered / _totalAnswered * 100).toStringAsFixed(0) : 0}%',
                                       style: const TextStyle(
-                                        fontSize: 16,
+                                        fontSize: 14,
                                         fontWeight: FontWeight.bold,
                                         color: Colors.green,
                                       ),
@@ -482,11 +485,11 @@ class _TrainingScreenBasicState extends State<TrainingScreenBasic> {
                                 ),
                                 Column(
                                   children: [
-                                    const Text('总题数', style: TextStyle(fontSize: 12, color: Colors.grey)),
+                                    const Text('总题数', style: TextStyle(fontSize: 10, color: Colors.grey)),
                                     Text(
                                       '$_totalAnswered',
                                       style: const TextStyle(
-                                        fontSize: 16,
+                                        fontSize: 14,
                                         fontWeight: FontWeight.bold,
                                         color: Colors.purple,
                                       ),
@@ -495,10 +498,10 @@ class _TrainingScreenBasicState extends State<TrainingScreenBasic> {
                                 ),
                               ],
                             ),
-                            const SizedBox(height: 10),
+                            const SizedBox(height: 5),
                             // 答题速度趋势指示器
                             Container(
-                              height: 4,
+                              height: 3,
                               decoration: BoxDecoration(
                                 color: Colors.grey.shade200,
                                 borderRadius: BorderRadius.circular(2),
@@ -515,27 +518,27 @@ class _TrainingScreenBasicState extends State<TrainingScreenBasic> {
                                 ],
                               ),
                             ),
-                            const SizedBox(height: 5),
+                            const SizedBox(height: 3),
                             Text(
                               _averageResponseTime > 3 ? '速度较慢，加油！' : '速度很好！',
                               style: TextStyle(
-                                fontSize: 12,
+                                fontSize: 10,
                                 color: _averageResponseTime > 3 ? Colors.red : Colors.green,
                               ),
                             ),
                           ],
                         ),
                       ),
-                      const SizedBox(height: 10),
+                      const SizedBox(height: 5),
                     ],
                     Expanded(
                       child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 20),
+                        padding: EdgeInsets.symmetric(horizontal: isSmallScreen ? 10 : 20),
                         child: _buildAnswerGrid(),
                       ),
                     ),
                   ],
-                  const SizedBox(height: 20),
+                  SizedBox(height: isSmallScreen ? 10 : 20),
                 ],
               ),
                           ],
@@ -548,13 +551,13 @@ class _TrainingScreenBasicState extends State<TrainingScreenBasic> {
   Widget _buildDurationSelectorGrid() {
     final durations = [5, 10, 20, 30];
     return Container(
-      height: 200,
+      height: 150,
       child: GridView.builder(
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 2,
           crossAxisSpacing: 10,
           mainAxisSpacing: 10,
-          childAspectRatio: 2.0,
+          childAspectRatio: 2.5,
         ),
         itemCount: durations.length,
         itemBuilder: (context, index) {
@@ -572,13 +575,13 @@ class _TrainingScreenBasicState extends State<TrainingScreenBasic> {
   Widget _buildKeySelectorGrid() {
     final keys = MusicTheoryLogic.getAvailableNotes();
     return Container(
-      height: 300,
+      height: 250,
       child: GridView.builder(
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 4,
-          crossAxisSpacing: 10,
-          mainAxisSpacing: 10,
-          childAspectRatio: 1.2,
+          crossAxisSpacing: 8,
+          mainAxisSpacing: 8,
+          childAspectRatio: 1.1,
         ),
         itemCount: keys.length,
         itemBuilder: (context, index) {
@@ -594,15 +597,17 @@ class _TrainingScreenBasicState extends State<TrainingScreenBasic> {
   }
 
   Widget _buildAnswerGrid() {
+    final isSmallScreen = MediaQuery.of(context).size.height < 700;
+
     if (_isForwardMode) {
       // 正向模式：选择音名
       final notes = MusicTheoryLogic.getAvailableNotes();
       return GridView.builder(
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 4,
-          crossAxisSpacing: 10,
-          mainAxisSpacing: 10,
-          childAspectRatio: 1.2,
+          crossAxisSpacing: isSmallScreen ? 6 : 8,
+          mainAxisSpacing: isSmallScreen ? 6 : 8,
+          childAspectRatio: isSmallScreen ? 0.9 : 1.0,
         ),
         itemCount: notes.length,
         itemBuilder: (context, index) {
@@ -632,11 +637,11 @@ class _TrainingScreenBasicState extends State<TrainingScreenBasic> {
       // 反向模式：选择级数
       final degrees = MusicTheoryLogic.getAvailableDegrees();
       return GridView.builder(
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 4,
-          crossAxisSpacing: 10,
-          mainAxisSpacing: 10,
-          childAspectRatio: 1.2,
+          crossAxisSpacing: isSmallScreen ? 6 : 8,
+          mainAxisSpacing: isSmallScreen ? 6 : 8,
+          childAspectRatio: isSmallScreen ? 0.9 : 1.0,
         ),
         itemCount: degrees.length,
         itemBuilder: (context, index) {
