@@ -117,8 +117,11 @@ class _TrainingScreenBasicState extends State<TrainingScreenBasic> {
         _streak = 0;
       }
 
+      // 根据答案正确性设置不同的延迟时间
+      final delayMs = isCorrect ? 300 : 1000; // 正确答案300ms，错误答案1000ms
+
       // 延迟后生成下一题
-      Future.delayed(const Duration(milliseconds: 1500), () {
+      Future.delayed(Duration(milliseconds: delayMs), () {
         if (mounted) {
           setState(() {
             _showingAnswer = false;
@@ -197,9 +200,6 @@ class _TrainingScreenBasicState extends State<TrainingScreenBasic> {
 
   @override
   Widget build(BuildContext context) {
-    final screenHeight = MediaQuery.of(context).size.height;
-    final isSmallScreen = screenHeight < 700;
-
     return Scaffold(
       appBar: AppBar(
         title: const Text('音乐训练'),
@@ -251,9 +251,9 @@ class _TrainingScreenBasicState extends State<TrainingScreenBasic> {
           ),
         ),
         child: SafeArea(
-          child: Stack(
-            children: [
-              Column(
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              return Column(
                 children: [
                   if (_showDurationSelector) ...[
                     Container(
@@ -353,63 +353,77 @@ class _TrainingScreenBasicState extends State<TrainingScreenBasic> {
                     ),
                   ],
                   if (!_showKeySelector && !_showDurationSelector) ...[
-                    SizedBox(height: isSmallScreen ? 5 : 10),
-                    Container(
-                      margin: const EdgeInsets.symmetric(horizontal: 20),
-                      padding: EdgeInsets.all(isSmallScreen ? 10 : 15),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(15),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.grey.withOpacity(0.3),
-                            spreadRadius: 2,
-                            blurRadius: 10,
-                          ),
-                        ],
-                      ),
-                      child: Column(
-                        children: [
-                          if (_isForwardMode) ...[
-                            const Text(
-                              '级数',
-                              style: TextStyle(fontSize: 16, color: Colors.grey),
-                            ),
-                            SizedBox(height: isSmallScreen ? 3 : 5),
-                            Text(
-                              '$_currentDegree',
-                              style: TextStyle(
-                                fontSize: isSmallScreen ? 28 : 36,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.orange,
-                              ),
-                            ),
-                            SizedBox(height: isSmallScreen ? 3 : 5),
-                            const Text(
-                              '对应的音名是？',
-                              style: TextStyle(fontSize: 16, color: Colors.grey),
-                            ),
-                          ] else ...[
-                            const Text(
-                              '音名',
-                              style: TextStyle(fontSize: 16, color: Colors.grey),
-                            ),
-                            SizedBox(height: isSmallScreen ? 3 : 5),
-                            Text(
-                              _currentNote,
-                              style: TextStyle(
-                                fontSize: isSmallScreen ? 28 : 36,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.purple,
-                              ),
-                            ),
-                            SizedBox(height: isSmallScreen ? 3 : 5),
-                            const Text(
-                              '对应的级数是？',
-                              style: TextStyle(fontSize: 16, color: Colors.grey),
+                    const SizedBox(height: 5),
+                    Flexible(
+                      flex: 1,
+                      child: Container(
+                        margin: const EdgeInsets.symmetric(horizontal: 20),
+                        padding: const EdgeInsets.all(6),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(15),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.grey.withOpacity(0.3),
+                              spreadRadius: 2,
+                              blurRadius: 10,
                             ),
                           ],
-                        ],
+                        ),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            if (_isForwardMode) ...[
+                              const Text(
+                                '级数',
+                                style: TextStyle(fontSize: 12, color: Colors.grey),
+                              ),
+                              const SizedBox(height: 1),
+                              Expanded(
+                                child: FittedBox(
+                                  fit: BoxFit.scaleDown,
+                                  child: Text(
+                                    '$_currentDegree',
+                                    style: const TextStyle(
+                                      fontSize: 28,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.orange,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(height: 1),
+                              const Text(
+                                '对应的音名是？',
+                                style: TextStyle(fontSize: 12, color: Colors.grey),
+                              ),
+                            ] else ...[
+                              const Text(
+                                '音名',
+                                style: TextStyle(fontSize: 12, color: Colors.grey),
+                              ),
+                              const SizedBox(height: 1),
+                              Expanded(
+                                child: FittedBox(
+                                  fit: BoxFit.scaleDown,
+                                  child: Text(
+                                    _currentNote,
+                                    style: const TextStyle(
+                                      fontSize: 28,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.purple,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(height: 1),
+                              const Text(
+                                '对应的级数是？',
+                                style: TextStyle(fontSize: 12, color: Colors.grey),
+                              ),
+                            ],
+                          ],
+                        ),
                       ),
                     ),
                   ],
@@ -529,19 +543,23 @@ class _TrainingScreenBasicState extends State<TrainingScreenBasic> {
                           ],
                         ),
                       ),
-                      const SizedBox(height: 5),
+                      const SizedBox(height: 15),
                     ],
-                    Expanded(
-                      child: Padding(
-                        padding: EdgeInsets.symmetric(horizontal: isSmallScreen ? 10 : 20),
-                        child: _buildAnswerGrid(),
+                    Flexible(
+                      flex: 5,
+                      child: Center(
+                        child: Container(
+                          constraints: const BoxConstraints(maxWidth: 400),
+                          padding: const EdgeInsets.symmetric(horizontal: 20),
+                          child: _buildAnswerGrid(),
+                        ),
                       ),
                     ),
                   ],
-                  SizedBox(height: isSmallScreen ? 10 : 20),
+                  const SizedBox(height: 20),
                 ],
-              ),
-                          ],
+              );
+            },
           ),
         ),
       ),
@@ -597,17 +615,15 @@ class _TrainingScreenBasicState extends State<TrainingScreenBasic> {
   }
 
   Widget _buildAnswerGrid() {
-    final isSmallScreen = MediaQuery.of(context).size.height < 700;
-
     if (_isForwardMode) {
       // 正向模式：选择音名
       final notes = MusicTheoryLogic.getAvailableNotes();
       return GridView.builder(
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 4,
-          crossAxisSpacing: isSmallScreen ? 6 : 8,
-          mainAxisSpacing: isSmallScreen ? 6 : 8,
-          childAspectRatio: isSmallScreen ? 0.9 : 1.0,
+          crossAxisSpacing: 8,
+          mainAxisSpacing: 8,
+          childAspectRatio: 1.0,
         ),
         itemCount: notes.length,
         itemBuilder: (context, index) {
@@ -637,11 +653,11 @@ class _TrainingScreenBasicState extends State<TrainingScreenBasic> {
       // 反向模式：选择级数
       final degrees = MusicTheoryLogic.getAvailableDegrees();
       return GridView.builder(
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 4,
-          crossAxisSpacing: isSmallScreen ? 6 : 8,
-          mainAxisSpacing: isSmallScreen ? 6 : 8,
-          childAspectRatio: isSmallScreen ? 0.9 : 1.0,
+          crossAxisSpacing: 8,
+          mainAxisSpacing: 8,
+          childAspectRatio: 1.0,
         ),
         itemCount: degrees.length,
         itemBuilder: (context, index) {
