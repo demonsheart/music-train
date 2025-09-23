@@ -23,6 +23,7 @@ class _TrainingScreenBasicState extends State<TrainingScreenBasic> {
   bool _showDurationSelector = true;
   int _selectedDuration = 5; // 默认5分钟
   Timer? _timer;
+  final TextEditingController _customDurationController = TextEditingController();
   int _remainingSeconds = 0;
   int _totalAnswered = 0;
   int _correctAnswered = 0;
@@ -140,6 +141,58 @@ class _TrainingScreenBasicState extends State<TrainingScreenBasic> {
     });
   }
 
+  void _showCustomDurationDialog() {
+    _customDurationController.clear();
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('自定义训练时间'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Text('请输入训练时长（分钟）：'),
+            const SizedBox(height: 10),
+            TextField(
+              controller: _customDurationController,
+              keyboardType: TextInputType.number,
+              decoration: const InputDecoration(
+                border: OutlineInputBorder(),
+                hintText: '例如：15',
+              ),
+              autofocus: true,
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            child: const Text('取消'),
+          ),
+          TextButton(
+            onPressed: () {
+              final minutes = int.tryParse(_customDurationController.text);
+              if (minutes != null && minutes > 0 && minutes <= 120) {
+                Navigator.of(context).pop();
+                selectDuration(minutes);
+              } else {
+                // 显示错误提示
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('请输入1-120之间的有效数字'),
+                    duration: Duration(seconds: 2),
+                  ),
+                );
+              }
+            },
+            child: const Text('确定'),
+          ),
+        ],
+      ),
+    );
+  }
+
   void selectDuration(int minutes) {
     setState(() {
       _selectedDuration = minutes;
@@ -150,6 +203,11 @@ class _TrainingScreenBasicState extends State<TrainingScreenBasic> {
   void startTimer() {
     _remainingSeconds = _selectedDuration * 60;
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (!mounted) {
+        _timer?.cancel();
+        return;
+      }
+
       setState(() {
         if (_remainingSeconds > 0) {
           _remainingSeconds--;
@@ -162,6 +220,15 @@ class _TrainingScreenBasicState extends State<TrainingScreenBasic> {
   }
 
   void _showTrainingComplete() {
+    // 防止重复弹窗
+    if (_timer == null) return;
+
+    setState(() {
+      _timer = null;
+    });
+
+    if (!mounted) return;
+
     showDialog(
       context: context,
       barrierDismissible: false,
@@ -195,6 +262,7 @@ class _TrainingScreenBasicState extends State<TrainingScreenBasic> {
   @override
   void dispose() {
     _timer?.cancel();
+    _customDurationController.dispose();
     super.dispose();
   }
 
@@ -557,25 +625,36 @@ class _TrainingScreenBasicState extends State<TrainingScreenBasic> {
 
   Widget _buildDurationSelectorGrid() {
     final durations = [5, 10, 20, 30];
-    return Container(
-      height: 150,
-      child: GridView.builder(
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 2,
-          crossAxisSpacing: 10,
-          mainAxisSpacing: 10,
-          childAspectRatio: 2.5,
+    return Column(
+      children: [
+        Container(
+          height: 150,
+          child: GridView.builder(
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2,
+              crossAxisSpacing: 10,
+              mainAxisSpacing: 10,
+              childAspectRatio: 2.5,
+            ),
+            itemCount: durations.length,
+            itemBuilder: (context, index) {
+              return AnswerButton(
+                text: '${durations[index]} 分钟',
+                onPressed: () => selectDuration(durations[index]),
+                backgroundColor: Colors.orange.shade100,
+                textColor: Colors.orange.shade900,
+              );
+            },
+          ),
         ),
-        itemCount: durations.length,
-        itemBuilder: (context, index) {
-          return AnswerButton(
-            text: '${durations[index]} 分钟',
-            onPressed: () => selectDuration(durations[index]),
-            backgroundColor: Colors.orange.shade100,
-            textColor: Colors.orange.shade900,
-          );
-        },
-      ),
+        const SizedBox(height: 15),
+        AnswerButton(
+          text: '自定义时间',
+          onPressed: _showCustomDurationDialog,
+          backgroundColor: Colors.purple.shade100,
+          textColor: Colors.purple.shade900,
+        ),
+      ],
     );
   }
 
