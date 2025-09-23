@@ -310,7 +310,7 @@ class _TrainingScreenBasicState extends State<TrainingScreenBasic> {
                   ] else ...[
                     Container(
                       margin: const EdgeInsets.all(20),
-                      padding: const EdgeInsets.all(20),
+                      padding: const EdgeInsets.all(16),
                       decoration: BoxDecoration(
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(15),
@@ -322,134 +322,123 @@ class _TrainingScreenBasicState extends State<TrainingScreenBasic> {
                           ),
                         ],
                       ),
-                      child: Column(
+                      child: Row(
                         children: [
-                          const Text(
-                            '当前调性',
-                            style: TextStyle(fontSize: 18, color: Colors.grey),
-                          ),
-                          const SizedBox(height: 10),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                '$_currentKey ${_isMajor ? '大调' : '小调'}',
-                                style: const TextStyle(
-                                  fontSize: 24,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.blue,
+                          // 左侧：调性设置区域
+                          Expanded(
+                            flex: 1,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const Text(
+                                  '当前调性',
+                                  style: TextStyle(fontSize: 14, color: Colors.grey),
                                 ),
-                              ),
-                              const SizedBox(width: 10),
-                              IconButton(
-                                icon: const Icon(Icons.edit, color: Colors.grey),
-                                onPressed: showKeySelector,
-                                tooltip: '更换调性',
-                              ),
-                            ],
+                                const SizedBox(height: 8),
+                                Row(
+                                  children: [
+                                    Text(
+                                      '$_currentKey ${_isMajor ? '大调' : '小调'}',
+                                      style: const TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.blue,
+                                      ),
+                                    ),
+                                    const SizedBox(width: 8),
+                                    IconButton(
+                                      icon: const Icon(Icons.edit, color: Colors.grey, size: 18),
+                                      onPressed: showKeySelector,
+                                      tooltip: '更换调性',
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: 12),
+                                Row(
+                                  children: [
+                                    ElevatedButton(
+                                      onPressed: toggleKeyMode,
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: _isMajor ? Colors.green : Colors.orange,
+                                        foregroundColor: Colors.white,
+                                        minimumSize: const Size(70, 30),
+                                      ),
+                                      child: Text(_isMajor ? '大调' : '小调', style: const TextStyle(fontSize: 12)),
+                                    ),
+                                    const SizedBox(width: 8),
+                                    ElevatedButton(
+                                      onPressed: toggleTrainingMode,
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: _isForwardMode ? Colors.blue : Colors.purple,
+                                        foregroundColor: Colors.white,
+                                        minimumSize: const Size(70, 30),
+                                      ),
+                                      child: Text(_isForwardMode ? '正向' : '反向', style: const TextStyle(fontSize: 12)),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ),
+                          // 分割线
+                          Container(
+                            width: 1,
+                            height: 80,
+                            color: Colors.grey.withOpacity(0.3),
+                          ),
+                          // 右侧：级数显示区域
+                          Expanded(
+                            flex: 1,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                if (_isForwardMode) ...[
+                                  const Text(
+                                    '级数',
+                                    style: TextStyle(fontSize: 12, color: Colors.grey),
+                                  ),
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    '$_currentDegree',
+                                    style: const TextStyle(
+                                      fontSize: 48,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.orange,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 4),
+                                  const Text(
+                                    '对应的音名是？',
+                                    style: TextStyle(fontSize: 12, color: Colors.grey),
+                                  ),
+                                ] else ...[
+                                  const Text(
+                                    '音名',
+                                    style: TextStyle(fontSize: 12, color: Colors.grey),
+                                  ),
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    _currentNote,
+                                    style: const TextStyle(
+                                      fontSize: 48,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.purple,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 4),
+                                  const Text(
+                                    '对应的级数是？',
+                                    style: TextStyle(fontSize: 12, color: Colors.grey),
+                                  ),
+                                ],
+                              ],
+                            ),
                           ),
                         ],
                       ),
                     ),
                   ],
                   if (!_showKeySelector && !_showDurationSelector) ...[
-                    const SizedBox(height: 5),
-                    Flexible(
-                      flex: 1,
-                      child: Container(
-                        margin: const EdgeInsets.symmetric(horizontal: 20),
-                        padding: const EdgeInsets.all(6),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(15),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.grey.withOpacity(0.3),
-                              spreadRadius: 2,
-                              blurRadius: 10,
-                            ),
-                          ],
-                        ),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            if (_isForwardMode) ...[
-                              const Text(
-                                '级数',
-                                style: TextStyle(fontSize: 12, color: Colors.grey),
-                              ),
-                              const SizedBox(height: 1),
-                              Expanded(
-                                child: FittedBox(
-                                  fit: BoxFit.scaleDown,
-                                  child: Text(
-                                    '$_currentDegree',
-                                    style: const TextStyle(
-                                      fontSize: 28,
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.orange,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              const SizedBox(height: 1),
-                              const Text(
-                                '对应的音名是？',
-                                style: TextStyle(fontSize: 12, color: Colors.grey),
-                              ),
-                            ] else ...[
-                              const Text(
-                                '音名',
-                                style: TextStyle(fontSize: 12, color: Colors.grey),
-                              ),
-                              const SizedBox(height: 1),
-                              Expanded(
-                                child: FittedBox(
-                                  fit: BoxFit.scaleDown,
-                                  child: Text(
-                                    _currentNote,
-                                    style: const TextStyle(
-                                      fontSize: 28,
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.purple,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              const SizedBox(height: 1),
-                              const Text(
-                                '对应的级数是？',
-                                style: TextStyle(fontSize: 12, color: Colors.grey),
-                              ),
-                            ],
-                          ],
-                        ),
-                      ),
-                    ),
-                  ],
-                  if (!_showKeySelector && !_showDurationSelector) ...[
-                    const SizedBox(height: 15),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        ElevatedButton(
-                          onPressed: toggleKeyMode,
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: _isMajor ? Colors.green : Colors.orange,
-                            foregroundColor: Colors.white,
-                          ),
-                          child: Text(_isMajor ? '大调' : '小调'),
-                        ),
-                        ElevatedButton(
-                          onPressed: toggleTrainingMode,
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: _isForwardMode ? Colors.blue : Colors.purple,
-                            foregroundColor: Colors.white,
-                          ),
-                          child: Text(_isForwardMode ? '正向练习' : '反向练习'),
-                        ),
-                      ],
-                    ),
                     const SizedBox(height: 10),
                     if (_totalAnswered > 0) ...[
                       Container(
